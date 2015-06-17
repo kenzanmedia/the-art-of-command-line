@@ -18,14 +18,14 @@ Much of this
 [originally](http://www.quora.com/What-are-some-lesser-known-but-useful-Unix-commands)
 [appeared](http://www.quora.com/What-are-the-most-useful-Swiss-army-knife-one-liners-on-Unix)
 on [Quora](http://www.quora.com/What-are-some-time-saving-tips-that-every-Linux-user-should-know),
-but given the interest there, it seems it's worth using Github, where people more talented than I can readily suggest improvements. If you see an error or something that could be better, please submit an issue or PR!
+but given the interest there, it seems it's worth using Github, where people more talented than I can readily suggest improvements. If you see an error or something that could be better, please submit an issue or PR! (But only after reviewing the scope/philosophy bullets below.)
 
 Scope:
 
-- The goals are breadth and brevity. Every tip is essential in some situation or significantly saves time over alternatives.
+- The goals are breadth (everything important), specificity (give concrete examples of the most common case), and brevity (avoid things that aren't essential or digressions you can easily look up elsewhere). Every tip is essential in some situation or significantly saves time over alternatives.
 - This is written for Linux. Many but not all items apply equally to MacOS (or even Cygwin).
 - The focus is on interactive Bash, though many tips apply to other shells and to general Bash scripting.
-- Descriptions are intentionally minimal, with the expectation you'll use `man`, `apt-get`/`yum`/`dnf` to install, and Google for more background.
+- To keep this to one page, include content by reference whenever possible. Descriptions are intentionally minimal, with the expectation you'll use `man`, `apt-get`/`yum`/`dnf` to install, and Google for more background.
 
 
 ## Basics
@@ -53,9 +53,9 @@ Scope:
 
 ## Everyday use
 
-- In Bash, use **ctrl-r** to search through command history.
+- In Bash, use **Tab** to complete arguments and **ctrl-r** to search through command history.
 
-- In Bash, use **ctrl-w** to delete the last word, and **ctrl-u** to delete the whole line. Use **alt-b** and **alt-f** to move by word, and **ctrl-k** to kill to the end of the line. See `man readline` for all the default keybindings in Bash. There are a lot. For example **alt-.** cycles through previous arguments, and **alt-*** expands a glob.
+- In Bash, use **ctrl-w** to delete the last word, and **ctrl-u** to delete the whole line. Use **alt-b** and **alt-f** to move by word, **ctrl-k** to kill to the end of the line, **ctrl-l** to clear the screen. See `man readline` for all the default keybindings in Bash. There are a lot. For example **alt-.** cycles through previous arguments, and **alt-*** expands a glob.
 
 - To go back to the previous working directory: `cd -`
 
@@ -105,12 +105,15 @@ Scope:
 
 - In ssh, knowing how to port tunnel with `-L` or `-D` (and occasionally `-R`) is useful, e.g. to access web sites from a remote server.
 
-- It can be useful to make a few optimizations to your ssh configuration; for example, this `~/.ssh/config` contains settings to avoid dropped connections in certain network environments, and use compression (which is helpful with scp over low-bandwidth connections):
+- It can be useful to make a few optimizations to your ssh configuration; for example, this `~/.ssh/config` contains settings to avoid dropped connections in certain network environments, use compression (which is helpful with scp over low-bandwidth connections), and multiplex channels to the same server with a local control file:
 ```
       TCPKeepAlive=yes
       ServerAliveInterval=15
       ServerAliveCountMax=6
       Compression=yes
+      ControlMaster auto
+      ControlPath /tmp/%r@%h:%p
+      ControlPersist yes
 ```
 
 - A few other options relevant to ssh are security sensitive and should be enabled with care, e.g. per subnet or host or in trusted networks: `StrictHostKeyChecking=no`, `ForwardAgent=yes`
@@ -125,9 +128,8 @@ Scope:
 - For interaction with files based on the output of another command (like `git`), use `fpp` ([PathPicker](https://github.com/facebook/PathPicker)).
 
 - For a simple web server for all files in the current directory (and subdirs), available to anyone on your network, use:
-```
-      python -m SimpleHTTPServer [port]
-```
+`python -m SimpleHTTPServer 7777` (for port 7777 and Python 2).
+
 
 ## Processing files and data
 
@@ -186,6 +188,8 @@ Scope:
 ```
 
 - To split files into pieces, see `split` (to split by size) and `csplit` (to split by a pattern).
+
+- Use `zless`, `zmore`, `zcat`, and `zgrep` to operate on compressed files.
 
 
 ## System debugging
@@ -313,6 +317,8 @@ A few examples of piecing together commands:
 
 - `nc`: network debugging and data transfer
 
+- `ngrep`: grep for the network layer
+
 - `dd`: moving data between files or devices
 
 - `file`: identify type of a file
@@ -385,7 +391,6 @@ A few examples of piecing together commands:
 
 - `fortune`, `ddate`, and `sl`: um, well, it depends on whether you consider steam locomotives and Zippy quotations "useful"
 
-- `ngrep`: grep for the network layer
 
 ## More resources
 
